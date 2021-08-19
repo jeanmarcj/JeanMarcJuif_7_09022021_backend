@@ -21,7 +21,7 @@ exports.create = (req, res) => {
         passwordHash: req.body.passwordHash,
         passwordPlainText: req.body.passwordPlainText,
         registeredAT: new Date().getTime(),
-        isAdmin: false,
+        isAdmin: true,
         isOnline: true,
         isActive: true
     };
