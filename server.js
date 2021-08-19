@@ -1,3 +1,4 @@
+// This file is a coded from scratch. It is not used for the app to start.
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
