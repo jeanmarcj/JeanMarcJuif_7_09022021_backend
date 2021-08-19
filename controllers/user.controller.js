@@ -16,19 +16,20 @@ exports.create = (req, res) => {
     // Create User
     const user = {
         firstName: req.body.firstName,
-        lastName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         passwordHash: req.body.passwordHash,
         passwordPlainText: req.body.passwordPlainText,
         registeredAT: new Date().getTime(),
         isAdmin: false,
-        isOnline: false,
+        isOnline: true,
         isActive: true
     };
 
     // Save User in the db
     User.create(user)
     .then(data => {
+        console.log('New User created with success !');
         res.send(data);
     })
     .catch(err => {
@@ -39,6 +40,7 @@ exports.create = (req, res) => {
 };
 
 // Get all Users from the database
+// Get all Users with uri: /users?lastname=Durand
 exports.findAll = (req, res) => {
     // res.send('Réponse de l\'API pour findAll');
     // res.json({ message: "Requête API : findAll ctrl !"});
