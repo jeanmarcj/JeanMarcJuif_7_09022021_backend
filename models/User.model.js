@@ -1,3 +1,5 @@
+const Post = require('./Post.model');
+
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
         firstName: {
@@ -19,6 +21,10 @@ module.exports = (sequelize, Sequelize) => {
         passwordPlainText: {
             type: Sequelize.STRING(50),
             allowNull: false
+        },
+        avatar: {
+            type: Sequelize.STRING,
+            defaultValue: null
         },
         registeredAT: {
             type: Sequelize.DATE,
