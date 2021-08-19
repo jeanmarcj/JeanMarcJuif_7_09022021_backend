@@ -5,6 +5,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var postsRouter = require('./routes/posts');
 
 var app = express();
 
@@ -19,7 +20,7 @@ const db = require('./models/index');
 // In production mode
 // db.sequelize.sync();
 
-// In development mode - Active to sunc models with DB
+// In development mode - Active to sync models with DB
 // db.sequelize.sync({
 //     force: true
 // }).then(() => {
@@ -29,5 +30,6 @@ const db = require('./models/index');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/posts', postsRouter);
 
 module.exports = app;
