@@ -29,6 +29,8 @@ sequelize.authenticate()
     console.log('Unable to connect to the database : ', err);
 })
 
+// db.users = users will be the table's name in the MySql DB
 db.users = require('./User.model')(sequelize, Sequelize);
+db.posts = require('./Post.model')(sequelize, Sequelize);
 
 module.exports = db;
