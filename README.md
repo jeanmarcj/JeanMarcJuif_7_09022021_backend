@@ -31,4 +31,5 @@ npm start
 
 TODO:
 
-- Ajouter la colonne avatar dans la table user
+- Dans la table 'posts' la colone 'authorId' n'est plus utilisée (remplacée par userId, insérée automatiquement par Sequelize lors de la création d'une association)
+- Dans les requêtes POST les id sont codés en hard.

@@ -1,0 +1,89 @@
+Table USERS
+================================
+
+{   
+    "firstName": "Jean-Marc",
+    "lastName": "Juif",
+    "email": "jmjbup@gmail.com",
+    "passwordHash": "",
+    "passwordPlainText": "test"
+}
+
+Table POSTS
+================================================
+
+{ 
+    "authorId": 1,
+    "title": "Mon premier post",
+    "media": "",
+    "content": "Test premier Post",
+    "slug": "premierpost"
+}
+
+Table comments
+================================================================
+
+POST http://localhost:3000/comments/
+{   
+    "content": "Comme tu dis ! Vive le soleil !"
+}
+{   
+    "content": "Pas trop tôt !"
+}
+
+GET All Comments for a Post -> /comments/post/:id
+GET One Comment with an id -> /comments/:id
+
+
+
+
+Requêtes
+================================================================
+Retourne tous les Posts avec son auteur
+SELECT * FROM `posts`
+JOIN `users`
+ON `posts`.`authorId` = `users`.`id`
+
+SELECT * FROM `posts`
+JOIN `users`
+ON `posts`.`authorId` = `users`.`id`
+WHERE `posts`.`title` LIKE '%Mon%'
+
+
+
+
+Sequelize functions
+// The get() function allows you to recover only the DataValues of the object
+console.log(newCompany.get())
+
+
+Sequelize exemple d'association clé étrangère dans un modèle :
+authorId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    references: { // Post belongsTo User 1:1
+        model: 'users',
+        key: 'id'
+    }
+
+Squelize exemple de requête SQL brute
+
+const title = req.query.title;
+let condition2 = title ? { title: `%${title}%` } : null;
+
+sequelize.query("SELECT * FROM `posts` JOIN `users` ON `posts`.`authorId` = `users`.`id` WHERE `posts`.`title` LIKE :title",
+{ replacements: condition2, type: sequelize.QueryTypes.SELECT })
+    .then(data => {
+        if (Object.keys(data).length === 0) {
+            console.log('No Posts found in DB !');
+            res.json({ message: 'No Post(s) found in database'});
+        } else {
+            console.log('Posts found !');
+            res.json(data);
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occured while retrieving posts !"
+        });
+    })
