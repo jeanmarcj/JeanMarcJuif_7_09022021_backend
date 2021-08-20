@@ -36,11 +36,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
-    // Define relationships between our models for Sequelize
-    // A post belongs to a User 1:1
-    Post.associate = function(models) {
-        Post.belongsTo(models.User, {foreignKey: 'authorID', as: 'user'})
-    };
-
     return Post;
 };

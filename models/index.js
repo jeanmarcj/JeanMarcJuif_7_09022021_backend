@@ -33,4 +33,13 @@ sequelize.authenticate()
 db.users = require('./User.model')(sequelize, Sequelize);
 db.posts = require('./Post.model')(sequelize, Sequelize);
 
+//Association One-to-hasMany
+// One user has many posts
+// We use hasMany() to help one Tutorial have many Comments, and belongsTo() to indicate that one Comment only belongs to one Tutorial.
+
+db.users.hasMany(db.posts, { as: "posts" });
+db.posts.belongsTo(db.users, {
+    foreignKey: "authorId", as: "user"
+});
+
 module.exports = db;

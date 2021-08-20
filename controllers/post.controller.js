@@ -42,53 +42,36 @@ exports.create = (req, res) => {
 };
 
 // Get all Posts from the database
-// Get all Posts with uri: /posts?title=Durand
+// Get all Posts with uri: /posts?title=information
 exports.findAll = (req, res) => {
     // res.send('Réponse de l\'API pour findAll');
     // res.json({ message: "[Posts] Requête API : findAll ctrl !"});
 
     const title = req.query.title;
     console.log(title);
-    let condition = title ? { title: { [Op.like]: `${title}`} } : null;
+    let condition = title ? { title: { [Op.like]: `%${title}%`} } : null;
     console.log(condition);
-    let condition2 = title ? 'Mon': null;
-    console.log(condition2);
-    
-    sequelize.query("SELECT * FROM `posts` JOIN `users` ON `posts`.`authorId` = `users`.`id` WHERE `posts`.`title` LIKE :title",
-    { replacements: { title: 'Mon%'}, type: sequelize.QueryTypes.SELECT })
+
+    Post.findAll({
+        include: ["user"],
+        where: condition
+    })
         .then(data => {
             if (Object.keys(data).length === 0) {
                 console.log('No Posts found in DB !');
                 res.json({ message: 'No Post(s) found in database'});
             } else {
-                console.log('Posts found !');
+                console.log('Posts find !');
                 res.json(data);
             }
+
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occured while retrieving posts !"
+                message:
+                    err.message || "Some error occurred while retrieving posts !"
             });
-        })
-
-    // Post.findAll({ where: condition })
-    //     .then(data => {
-    //         if (Object.keys(data).length === 0) {
-    //             console.log('No Posts found in DB !');
-    //             res.json({ message: 'No Post(s) found in database'});
-    //         } else {
-    //             console.log('Posts find !');
-    //             console.log(typeof(data));
-    //             res.json(data);
-    //         }
-
-    //     })
-    //     .catch(err => {
-    //         res.status(500).send({
-    //             message:
-    //                 err.message || "Some error occurred while retrieving posts !"
-    //         });
-    //     });
+        });
 };
 
 // Get one Post with an id
@@ -99,12 +82,8 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
 
     Post.findOne({
-        where: { id: id },
-        // include: 'users'
-        // include: [{
-        //     model: User,
-        //     where: { id: Sequelize.col('posts.authorId')}
-        // }]
+        include: ["user"],
+        where: { id: id }
     })
     .then(data => {
         //Get the Post with User datas included
@@ -123,20 +102,6 @@ exports.findOne = (req, res) => {
             message: "Error retrieving Post with id=" + id || err.message
         });
     })
-
-    // Post.findByPk(id)
-    //     .then(data => {
-    //         if (data === null) {
-    //             res.json({ message: "No post found !" });
-    //         }
-    //         console.log('Posts found !');
-    //         res.json(data);
-    //     })
-    //     .catch(err => {
-    //         res.status(500).send({
-    //             message: "Error retrieving Post with id=" + id
-    //         });
-    //     });
 };
 
 // Update a Post with an id in the request
@@ -156,8 +121,9 @@ exports.update = (req, res) => {
         }
       })
       .catch(err => {
+          console.log(err);
         res.status(500).send({
-          message: "Error updating Post with id=" + id
+          message: err + " - Error updating Post with id=" + id
         });
       });
   };

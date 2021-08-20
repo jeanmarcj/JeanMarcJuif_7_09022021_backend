@@ -21,10 +21,10 @@ router.get("/", posts.findAll);
 router.get('/:id', posts.findOne);
 
 /* PUT post by id */
-// router.put("/:id", posts.update);
+router.put("/:id", posts.update);
 
 /* DELETE a post by id */
-// router.delete("/:id", posts.delete);
+router.delete("/:id", posts.delete);
 
 /* DELETE all Posts */
 // router.delete("/", posts.deleteAll);
