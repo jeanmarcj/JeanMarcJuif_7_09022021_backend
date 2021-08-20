@@ -1,7 +1,5 @@
-const { sequelize } = require('../models');
 const db = require('../models');
 const Post = db.posts;
-const User = db.users;
 const Op = db.Sequelize.Op;
 
 
