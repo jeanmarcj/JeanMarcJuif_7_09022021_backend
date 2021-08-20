@@ -32,6 +32,7 @@ sequelize.authenticate()
 // db.users = users will be the table's name in the MySql DB
 db.users = require('./User.model')(sequelize, Sequelize);
 db.posts = require('./Post.model')(sequelize, Sequelize);
+db.postComments = require('./Comment.model')(sequelize, Sequelize);
 
 //Association One-to-hasMany
 // One user has many posts
@@ -41,5 +42,17 @@ db.users.hasMany(db.posts, { as: "posts" });
 db.posts.belongsTo(db.users, {
     foreignKey: "authorId", as: "user"
 });
+
+// One user has many Comments
+// One post has many postComments
+// Comment belongs to one post
+db.users.hasMany(db.postComments, { as: "comments" });
+db.posts.hasMany(db.postComments, { as: "comments" });
+db.postComments.belongsTo(db.posts, {
+    foreingnKey: "postId", as: "post"
+});
+db.postComments.belongsTo(db.users, {
+    foreingnKey: "userId", as: "user"
+})
 
 module.exports = db;
