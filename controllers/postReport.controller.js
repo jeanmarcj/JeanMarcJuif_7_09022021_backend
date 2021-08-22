@@ -16,7 +16,7 @@ exports.create = (req, res) => {
     };
     console.log(report.postId);
     
-    // TODO: Check if the USer has already report a Post
+    // Check if the User has already report this Post
     Report.findAll({
         where: { postId: report.postId, userId: report.userId }
     })
