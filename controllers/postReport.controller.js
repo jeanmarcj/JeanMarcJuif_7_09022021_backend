@@ -6,155 +6,162 @@ const Op = db.Sequelize.Op;
 // Create and save a new Report
 // /report/
 exports.create = (req, res) => {
-    res.json({ message: "[Reports] Requête API : create ctrl !"});
+    // res.json({ message: "[Reports] Requête API : create ctrl !"});
 
-    // Validate the request
-    // if (!req.body.content) {
-    //     res.status(400).send({
-    //         message: "The Comment content can not be empty !"
-    //     });
-    //     return;
-    // }
+    // Create Report
+    const report = {
+        userId: 1, // Should be dynamic
+        postId: 1, // Should be dynamic
+        isReported: req.body.isReported
+    };
 
-    // // Create Comment
-    // const comment = {
-    //     userId: 1, // Should be dynamic
-    //     postId: 1, // Should be dynamic
-    //     content: req.body.content,
-    //     published: true
-    // };
-
-    // // Save Comment in the db
-    // Comment.create(comment)
-    // .then(data => {
-    //     console.log('New Comment created with success !');
-    //     res.send(data);
-    // })
-    // .catch(err => {
-    //     res.status(500).send({
-    //         message: err.message || "Some error occured while creating the Comment."
-    //     });
-    // });
+    // Save Report in the db
+    Report.create(report)
+    .then(data => {
+        console.log('*** - New Report created with success ! - ***');
+        res.send(data);
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: err.message + ". Some error occured while creating the Report."
+        });
+    });
 };
 
 // Get all Reports Listing. Uri /
 exports.findAll = (req, res) => {
-    res.json({ message: "[Reports] Requête API : findAll ctrl !"});
+    // res.json({ message: "[Reports] Requête API : findAll ctrl !"});
+
+    Report.findAll()
+    .then(data => {
+        if (Object.keys(data).length === 0) {
+            console.log('*** - No Reports found in database ! - ***')
+            res.json({ message: 'No Reports found in the database !'});
+        } else {
+            console.log('Reports found !');
+            res.json(data);
+        }
+    })
+    .catch(err => { res.status(500).send(
+        { message: err.message + ". Some error occurred while retrieving Reports !"}
+        )
+    });
 };
 
-// Get all Reports from the database
+// Get all Reports from the database with an post id
 // uri: /reports/post/:id
 exports.findAllByPost = (req, res) => {
     // res.send('Réponse de l\'API pour findAll');
-    res.json({ message: "[Reports] Requête API : findAllByPost ctrl !"});
+    // res.json({ message: "[Reports] Requête API : findAllByPost ctrl !"});
     
     const id = req.params.id;
     console.log(id);
     // let condition = title ? { title: { [Op.like]: `%${title}%`} } : null;
     // console.log(condition);
 
-    // Comment.findAll({
-    //     include: ["post", "user"],
-    //     where: { postId: id }
-    // })
-    //     .then(data => {
-    //         if (Object.keys(data).length === 0) {
-    //             console.log('No Comments found in DB for this Post !');
-    //             res.json({ message: 'No Comments(s) found in database for this Post.'});
-    //         } else {
-    //             console.log('Comments found !');
-    //             res.json(data);
-    //         }
+    Comment.findAll({
+        include: ["post", "user"],
+        where: { postId: id }
+    })
+        .then(data => {
+            if (Object.keys(data).length === 0) {
+                console.log('*** - No Report(s) found in DB for this Post ! - ***');
+                res.json({ message: 'No Report(s) found in database for this Post.'});
+            } else {
+                console.log('Report(s) found !');
+                res.json(data);
+            }
 
-    //     })
-    //     .catch(err => {
-    //         res.status(500).send({
-    //             message:
-    //                 err.message || "Some error occurred while retrieving Comments !"
-    //         });
-    //     });
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message + ". Some error occurred while retrieving Reports !"
+            });
+        });
 };
 
 // Get one Report with an id
 // uri: reports/:id
 exports.findOne = (req, res) => {
     // res.send('Réponse de l\'API pour findOne');
-    res.json({ message: "[comments] Requête API : findOne id: " + req.params.id });
+    // res.json({ message: "[reports] Requête API : findOne id: " + req.params.id });
 
     const id = req.params.id;
 
-    // Report.findOne({
-    //     include: ["user"],
-    //     where: { id: id }
-    // })
-    // .then(data => {
-    //     //Get the Comment with User datas included
-    //     if (data === null) {
-    //         console.log('This Comment is not in DB !');
-    //         res.json({ message: 'This Comment is not in DB !'});
-    //     } else {
-    //         //Get the User record only
-    //         // console.log(data.user);
-    //         res.json(data);
-    //     }
-    // })
-    // .catch(err => {
-    //     res.status(500).send({
-    //         message: "Error retrieving Post with id=" + id || err.message
-    //     });
-    // })
+    Report.findOne({
+        include: ["post", "user"],
+        where: { id: id }
+    })
+    .then(data => {
+        //Get the Report with User & Post datas included
+        if (data === null) {
+            console.log('*** - This Report is not in DB ! - ***');
+            res.json({ message: 'This Report is not in the database !'});
+        } else {
+            //Get the User record only
+            // console.log(data.user);
+            res.json(data);
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Error retrieving Report with id=" + id || err.message
+        });
+    })
 };
 
 // Update a Report with an id in the request
 // uri: /reports/id
 exports.update = (req, res) => {
-    res.json({ message: "[reports] Requête API : update id: " + req.params.id });
+    // res.json({ message: "[reports] Requête API : update id: " + req.params.id });
     const id = req.params.id;
   
-//    Report.update(req.body, {
-//       where: { id: id }
-//     })
-//       .then(num => {
-//         if (num == 1) {
-//             console.log("Comment was updated successfully");
-//             res.json({ message: "Comment was updated successfully" });
-//         } else {
-//             console.log(`Cannot update Comment with id=${id}. Maybe this Comment was not found or req.body is empty !`);
-//             res.json({ message: `Cannot update Comment with id=${id}. Maybe this Comment was not found or req.body is empty !` });
-//         }
-//       })
-//       .catch(err => {
-//           console.log(err);
-//         res.status(500).send({
-//           message: err + " - Error updating Comment with id=" + id
-//         });
-//       });
+   Report.update(req.body, {
+      where: { id: id }
+    })
+      .then(num => {
+        if (num == 1) {
+            // TODO: The report ligne for this report should be erased
+            console.log("*** - Report updated successfully - ***");
+            res.json({ message: "Report updated successfully" });
+        } else {
+            console.log(`Cannot update Report with id=${id}. Maybe this Report was not found or req.body is empty !`);
+            res.json({ message: `Cannot update Report with id=${id} !` });
+        }
+      })
+      .catch(err => {
+          console.log(err);
+        res.status(500).send({
+          message: err + ". Error updating Report with id=" + id
+        });
+      });
   };
 
 // Delete a Report with the specified id in the request
 // uri: /reports/id
 exports.delete = (req, res) => {
-    res.json({ message: "[comments] Requête API : delete id: " + req.params.id });
+    // res.json({ message: "[reports] Requête API : delete id: " + req.params.id });
     
     const id = req.params.id;
 
-    // Report.destroy({
-    //   where: { id: id }
-    // })
-    //   .then(num => {
-    //     if (num == 1) {
-    //         console.log("Comment was deleted successfully");
-    //         res.json({ message: "The Comment has been deleted successfully" });
-    //     } else {
-    //         console.log(`Cannot delete this Comment with id=${id}. Maybe this Comment was not found or req.body is empty !`);
-    //         res.json({ message: `Cannot delete this Comment with id=${id}. Maybe this Comment was not found !` });
-    //     }
-    //   })
-    //   .catch(err => {
-    //     res.status(500).send({
-    //       message: "Could not delete this Comment with id=" + id
-    //     });
-    //   });
+    Report.destroy({
+      where: { id: id }
+    })
+      .then(num => {
+        if (num == 1) {
+            console.log("*** - Report deleted successfully ! - ***");
+            res.json({ message: "The Report deleted successfully !" });
+        } else {
+            console.log(`*** - Cannot delete this Report with id=${id}. Maybe this Comment was not found or req.body is empty ! - ***`);
+            res.json({ message: `Cannot delete this Report with id=${id} !` });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Could not delete this Report with id=" + id
+        });
+      });
   };
 
 // Delete all Reports from the database
@@ -166,40 +173,47 @@ exports.deleteAll = (req, res) => {
     //   truncate: false
     // })
     //   .then(nums => {
-    //       console.log(`${num} Comments were deleted successfully`);
-    //       res.json({ message: `${nums} Comments were deleted successfully` })
+    //       console.log(`*** - ${num} Reports were deleted successfully - ***`);
+    //       res.json({ message: `${nums} Reports were deleted successfully` })
     //   })
     //   .catch(err => {
     //     res.status(500).send({
     //       message:
-    //         err.message || "Some error occurred while removing all Comments."
+    //         err.message + ". Some error occurred while removing all Reports."
     //     });
     //   });
   };
 
-// Find all Reports for an User = true
+// Find all Reports for an User id
 // uri : /comments/user/:userId
 
 exports.findUserReports = (req, res) => {
+    
     const userId = req.params.userId;
 
-    res.json( {message: '[reports] Réponse de l\'API pour findPublishedComments userId: ' + userId });
+    // res.json( {message: '[reports] Réponse de l\'API pour findUserReports userId: ' + userId });
 
-    // Comment.findAll(
-    //     {   attributes: ['id','content', 'published'],
-    //         include: ["post", "user"],
-    //         where: {
-    //             postId: postId,
-    //             published: true
-    //         }
-    //     }
-    //     )
-    //     .then(data => {
-    //         res.json(data);
-    //     })
-    //     .catch(err => {
-    //         res.status(500).send({
-    //             message: "Some error occurred when retrieving Posts."
-    //         });
-    //     });
+    Comment.findAll(
+            {   attributes: ['id','isReported', 'postId'],
+                include: ["post", "user"],
+                where: {
+                    userId: userId,
+                    isReported: true
+                }
+            }
+        )
+        .then(data => {
+            if (data === null) {
+                console.log(`*** - Reports found for this user ! - ***`);
+                res.json(data);
+            } else {
+                console.log(`*** - No Report(s) found for this user ! - ***`);
+                res.json({ message: 'No Report(s) found for this User !'});
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Some error occurred when retrieving Reports for this User."
+            });
+        });
 };
