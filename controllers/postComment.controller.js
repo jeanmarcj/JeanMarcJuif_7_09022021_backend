@@ -18,8 +18,8 @@ exports.create = (req, res) => {
 
     // Create Comment
     const comment = {
-        userId: 1, // Should be dynamic
-        postId: 1, // Should be dynamic
+        userId: req.body.userId, // Should be dynamic
+        postId: req.body.postId, // Should be dynamic
         content: req.body.content,
         published: true
     };
@@ -27,12 +27,12 @@ exports.create = (req, res) => {
     // Save Comment in the db
     Comment.create(comment)
     .then(data => {
-        console.log('New Comment created with success !');
+        console.log('*** - New Comment created with success ! - ***');
         res.send(data);
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occured while creating the Comment."
+            message: err.message +". Some error occured while creating the Comment."
         });
     });
 };
@@ -54,10 +54,10 @@ exports.findAll = (req, res) => {
     })
         .then(data => {
             if (Object.keys(data).length === 0) {
-                console.log('No Comments found in DB for this Post !');
+                console.log('*** - No Comments found in DB for this Post ! - ***');
                 res.json({ message: 'No Comments(s) found in database for this Post.'});
             } else {
-                console.log('Comments found !');
+                console.log('*** - Comments found ! - ***');
                 res.json(data);
             }
 
@@ -65,7 +65,7 @@ exports.findAll = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving Comments !"
+                    err.message + ". Some error occurred while retrieving Comments !"
             });
         });
 };
@@ -85,7 +85,7 @@ exports.findOne = (req, res) => {
     .then(data => {
         //Get the Comment with User datas included
         if (data === null) {
-            console.log('This Comment is not in DB !');
+            console.log('*** - This Comment is not in DB ! - ***');
             res.json({ message: 'This Comment is not in DB !'});
         } else {
             //Get the User record only
@@ -95,7 +95,7 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
         res.status(500).send({
-            message: "Error retrieving Post with id=" + id || err.message
+            message: err.message + ". Error retrieving Post with id=" + id
         });
     })
 };
@@ -111,17 +111,17 @@ exports.update = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
-            console.log("Comment was updated successfully");
+            console.log("*** - Comment was updated successfully - ***");
             res.json({ message: "Comment was updated successfully" });
         } else {
-            console.log(`Cannot update Comment with id=${id}. Maybe this Comment was not found or req.body is empty !`);
-            res.json({ message: `Cannot update Comment with id=${id}. Maybe this Comment was not found or req.body is empty !` });
+            console.log(`*** - Cannot update Comment with id=${id}. Maybe this Comment was not found or req.body is empty ! - ***`);
+            res.json({ message: `Cannot update Comment !` });
         }
       })
       .catch(err => {
           console.log(err);
         res.status(500).send({
-          message: err + " - Error updating Comment with id=" + id
+          message: err + ". Error updating Comment with id=" + id
         });
       });
   };
@@ -138,11 +138,11 @@ exports.delete = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
-            console.log("Comment was deleted successfully");
-            res.json({ message: "The Comment has been deleted successfully" });
+            console.log("*** - Comment was deleted successfully - ***");
+            res.json({ message: "The Comment has been deleted successfully !" });
         } else {
-            console.log(`Cannot delete this Comment with id=${id}. Maybe this Comment was not found or req.body is empty !`);
-            res.json({ message: `Cannot delete this Comment with id=${id}. Maybe this Comment was not found !` });
+            console.log(`*** - Cannot delete this Comment with id=${id}. Maybe this Comment was not found or req.body is empty ! - ***`);
+            res.json({ message: `Cannot delete this Comment !` });
         }
       })
       .catch(err => {
@@ -154,20 +154,20 @@ exports.delete = (req, res) => {
 
 // Delete all Comments from the database
 exports.deleteAll = (req, res) => {
-    res.json({ message: "[comments] Requête API : deleteAll: " });
+    res.json({ message: "[Comments] Requête API : deleteAll. This functionnality doesn't work !" });
 
     // Comment.destroy({
     //   where: {},
     //   truncate: false
     // })
     //   .then(nums => {
-    //       console.log(`${num} Comments were deleted successfully`);
+    //       console.log(`*** - ${num} Comments were deleted successfully - ***`);
     //       res.json({ message: `${nums} Comments were deleted successfully` })
     //   })
     //   .catch(err => {
     //     res.status(500).send({
     //       message:
-    //         err.message || "Some error occurred while removing all Comments."
+    //         err.message + ". Some error occurred while removing all Comments."
     //     });
     //   });
   };
@@ -190,11 +190,18 @@ exports.findPublishedComments = (req, res) => {
         }
         )
         .then(data => {
-            res.json(data);
+            if (data === null) {
+                console.log('*** - No published Comment(s) found in the database !');
+                res.json({ message: "No published comment(s) found in the database !" })
+            } else {
+                console.log('*** - Published comments found ! - ***');
+                res.json(data);
+            }
+            
         })
         .catch(err => {
             res.status(500).send({
-                message: "Some error occurred when retrieving Posts."
+                message: err + ". Some error occurred when retrieving Posts."
             });
         });
 };
