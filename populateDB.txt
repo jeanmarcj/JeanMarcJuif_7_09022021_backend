@@ -25,19 +25,37 @@ Table comments
 
 POST http://localhost:3000/comments/
 {   
-    "content": "Comme tu dis ! Vive le soleil !"
+    "content": "Vive le sport !",
+    "userId": 1,
+    "postId": 2
 }
+
 {   
-    "content": "Pas trop tôt !"
+    "content": "Pas trop tôt !",
+    "userId": 2,
+    "postId": 1
 }
 
 GET All Comments for a Post -> /comments/post/:id
 GET One Comment with an id -> /comments/:id
 
+Table reports
+================================================================
+POST http://localhost:3000/reports/
+{   
+    "isReported": "true",
+    "postId": 2,
+    "userId": 1
+}
+
+{   
+    "isReported": "true",
+    "postId": 1,
+    "userId": 2
+}
 
 
-
-Requêtes
+Exemple de Requêtes
 ================================================================
 Retourne tous les Posts avec son auteur
 SELECT * FROM `posts`
