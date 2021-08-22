@@ -10,20 +10,42 @@ exports.create = (req, res) => {
 
     // Create Report
     const report = {
-        userId: 1, // Should be dynamic
-        postId: 1, // Should be dynamic
+        userId: req.body.userId, // Should be dynamic
+        postId: req.body.postId, // Should be dynamic
         isReported: req.body.isReported
     };
-
-    // Save Report in the db
-    Report.create(report)
+    console.log(report.postId);
+    
+    // TODO: Check if the USer has already report a Post
+    Report.findAll({
+        where: { postId: report.postId, userId: report.userId }
+    })
     .then(data => {
-        console.log('*** - New Report created with success ! - ***');
-        res.send(data);
+        if (Object.keys(data).length === 0) {
+            console.log('*** - This post is not reported by the User. Save in DB - ***');
+            
+            // Save Report in the db
+            Report.create(report)
+            .then(data => {
+                console.log('*** - New Report created with success ! - ***');
+                res.send(data);
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message + ". Some error occured while creating the Report."
+                });
+            });
+            
+        } else {
+            console.log('*** - This post is already reported by the User !');
+            res.json({ message: 'Post Already reported !'});
+            // res.json(data);
+        }
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message + ". Some error occured while creating the Report."
+            message:
+                err.message + ". Some error occurred while retrieving a Report !"
         });
     });
 };
@@ -32,7 +54,10 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     // res.json({ message: "[Reports] Requête API : findAll ctrl !"});
 
-    Report.findAll()
+    Report.findAll({
+        attributes: ['id'],
+        include: ["user", "post"],
+    })
     .then(data => {
         if (Object.keys(data).length === 0) {
             console.log('*** - No Reports found in database ! - ***')
@@ -55,11 +80,11 @@ exports.findAllByPost = (req, res) => {
     // res.json({ message: "[Reports] Requête API : findAllByPost ctrl !"});
     
     const id = req.params.id;
-    console.log(id);
+    // console.log(id);
     // let condition = title ? { title: { [Op.like]: `%${title}%`} } : null;
     // console.log(condition);
 
-    Comment.findAll({
+    Report.findAll({
         include: ["post", "user"],
         where: { postId: id }
     })
@@ -99,6 +124,7 @@ exports.findOne = (req, res) => {
             console.log('*** - This Report is not in DB ! - ***');
             res.json({ message: 'This Report is not in the database !'});
         } else {
+            console.log('*** - Report found ! - ***');
             //Get the User record only
             // console.log(data.user);
             res.json(data);
@@ -106,7 +132,7 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
         res.status(500).send({
-            message: "Error retrieving Report with id=" + id || err.message
+            message: err.message + ". Error retrieving Report with id=" + id
         });
     })
 };
@@ -122,6 +148,7 @@ exports.update = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
+
             // TODO: The report ligne for this report should be erased
             console.log("*** - Report updated successfully - ***");
             res.json({ message: "Report updated successfully" });
@@ -168,7 +195,7 @@ exports.delete = (req, res) => {
 exports.deleteAll = (req, res) => {
     res.json({ message: "[reports] Requête API : deleteAll - This option is not available ! " });
 
-    // Comment.destroy({
+    // Report.destroy({
     //   where: {},
     //   truncate: false
     // })
@@ -190,10 +217,11 @@ exports.deleteAll = (req, res) => {
 exports.findUserReports = (req, res) => {
     
     const userId = req.params.userId;
+    console.log(userId);
 
     // res.json( {message: '[reports] Réponse de l\'API pour findUserReports userId: ' + userId });
 
-    Comment.findAll(
+    Report.findAll(
             {   attributes: ['id','isReported', 'postId'],
                 include: ["post", "user"],
                 where: {
@@ -204,11 +232,11 @@ exports.findUserReports = (req, res) => {
         )
         .then(data => {
             if (data === null) {
-                console.log(`*** - Reports found for this user ! - ***`);
-                res.json(data);
-            } else {
-                console.log(`*** - No Report(s) found for this user ! - ***`);
+                console.log(`*** - No Reports found for this user ! - ***`);
                 res.json({ message: 'No Report(s) found for this User !'});
+            } else {
+                console.log(`*** - Report(s) found for this user ! - ***`); 
+                res.json(data);
             }
         })
         .catch(err => {
