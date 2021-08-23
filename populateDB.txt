@@ -11,7 +11,7 @@ Table USERS
 
 Table POSTS
 ================================================
-
+POST http://localhost:3000/posts/
 { 
     "authorId": 1,
     "title": "Mon premier post",
@@ -53,6 +53,24 @@ POST http://localhost:3000/reports/
     "postId": 1,
     "userId": 2
 }
+
+Table postLikes
+================================================================
+POST http://localhost:3000/likes/
+{   
+    "isLiked": "true",
+    "isDisliked": "false"
+    "postId": 1,
+    "userId": 2
+}
+
+{   
+    "isLiked": "false",
+    "isDisliked": "true",
+    "postId": 2,
+    "userId": 1
+}
+
 
 
 Exemple de Requêtes
