@@ -9,7 +9,13 @@ router.post('/', likes.create);
 router.get("/", likes.findAll);
 
 /* GET Reports by Post listing. Uri: /reports/post/1 */
-router.get("/post/:id", likes.findAllByPost);
+// router.get("/post/:id", likes.findAllByPost);
+
+// uri: /likes/post/:id/isLiked
+router.get("/post/:id/liked", likes.findAllLikedByPost);
+
+// uri: /likes/post/:id/isdiliked
+router.get("/post/:id/disliked", likes.findAlldisLikedByPost);
 
 /* GET all Reports for an User. Uri /reports/user/1 */
 router.get("/user/:userId", likes.findUserLikes);
