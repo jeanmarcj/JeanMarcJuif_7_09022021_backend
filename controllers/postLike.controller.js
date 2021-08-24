@@ -93,7 +93,7 @@ exports.findAll = (req, res) => {
 };
 
 // Get all Likes from the database with an post id
-// uri: /likes/post/:id/isliked
+// uri: /likes/post/:id/liked
 exports.findAllLikedByPost = (req, res) => {
     // res.send('Réponse de l\'API pour findAll');
     // res.json({ message: "[Likes/Dislike] Requête API : findAllByPost ctrl !"});
