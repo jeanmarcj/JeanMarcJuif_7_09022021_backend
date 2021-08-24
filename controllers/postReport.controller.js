@@ -212,7 +212,7 @@ exports.deleteAll = (req, res) => {
   };
 
 // Find all Reports for an User id
-// uri : /comments/user/:userId
+// uri : /reports/user/:userId
 
 exports.findUserReports = (req, res) => {
     
