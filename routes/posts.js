@@ -15,7 +15,11 @@ router.post('/', posts.create);
 router.get("/", posts.findAll);
 
 /* GET all published post(s) */
-// router.get("/published", posts.findPublishedPosts);
+router.get("/published", posts.findPublishedPosts);
+
+/* GET the number total of published posts in DataBase. */
+//URI /posts/totalpublishedposts/
+router.get('/totalpublishedposts', posts.getTotalPublishedPosts);
 
 /* Get one post by id */
 router.get('/:id', posts.findOne);

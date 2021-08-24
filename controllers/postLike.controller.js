@@ -146,7 +146,7 @@ exports.findAlldisLikedByPost = (req, res) => {
         },
         // include: ["post", "user"]
 
-    })
+        })
         .then(data => {
             if (Object.keys(data).length === 0) {
                 console.log('*** - No Dislike(s) found in DB for this Post ! - ***');

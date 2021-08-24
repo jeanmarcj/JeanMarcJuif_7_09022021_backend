@@ -168,17 +168,52 @@ exports.deleteAll = (req, res) => {
   };
 
 // Find all admin Posts isAdmin = true
+// uri : /posts/published
 exports.findPublishedPosts = (req, res) => {
     // res.send('Réponse de l\'API pour findPublishedPosts');
-    Post.findAll(
-        { attributes: ['id', 'authorId', 'title'] },
-        { where: {published: true } })
+    Post.findAll({
+            attributes: ['id', 'authorId', 'title', 'published'],
+            include: ["user"],
+            where: { published: true }
+        })
         .then(data => {
             res.json(data);
         })
         .catch(err => {
             res.status(500).send({
                 message: "Some error occurred when retrieving Posts."
+            });
+        });
+};
+
+// Get the number of total published posts in the database
+exports.getTotalPublishedPosts = (req, res) => {
+    // res.send('Réponse de l\'API pour findPublishedPosts');
+    Post.findAndCountAll({
+        attributes: ['id','published'],
+        where: {
+            published: true
+        },
+        // include: ["post", "user"]
+
+        })
+        .then(data => {
+            if (Object.keys(data).length === 0) {
+                console.log('*** - No Dislike(s) found in DB for this Post ! - ***');
+                res.json({ totalPublishedPost: 0 });
+            } else {
+                console.log(`*** - ${data.count} published Post(s) found ! - ***`);
+                res.json({
+                    totalPublishedPost: data.count,
+                    // Rows: data.rows
+                })
+            }
+
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message + ". Some error occurred while retrieving Dislikes !"
             });
         });
 };
