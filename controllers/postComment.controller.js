@@ -39,7 +39,7 @@ exports.create = (req, res) => {
 
 // Get all Comments from the database
 // uri: /comments/post/:id
-exports.findAll = (req, res) => {
+exports.findAllByPost = (req, res) => {
     // res.send('Réponse de l\'API pour findAll');
     // res.json({ message: "[Comments] Requête API : findAll ctrl !"});
     
@@ -68,6 +68,28 @@ exports.findAll = (req, res) => {
                     err.message + ". Some error occurred while retrieving Comments !"
             });
         });
+};
+
+// Get all Comments Listing. Uri "/"
+exports.findAll = (req, res) => {
+    // res.json({ message: "[Reports] Requête API : findAll ctrl !"});
+
+    Comment.findAll({
+        include: ["user", "post"],
+    })
+    .then(data => {
+        if (Object.keys(data).length === 0) {
+            console.log('*** - No Comments found in database ! - ***')
+            res.json({ message: 'No Comments found in the database !'});
+        } else {
+            console.log('Comments found !');
+            res.json(data);
+        }
+    })
+    .catch(err => { res.status(500).send(
+        { message: err.message + ". Some error occurred while retrieving Comments !"}
+        )
+    });
 };
 
 // Get one Comment with an id

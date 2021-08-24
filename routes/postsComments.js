@@ -6,8 +6,10 @@ const comments = require('../controllers/postComment.controller');
 router.post('/', comments.create);
 
 /* GET Comments listing. Uri: /comments/post/1 */
+router.get("/post/:id", comments.findAllByPost);
 
-router.get("/post/:id", comments.findAll);
+/* GET all Comments */
+router.get("/", comments.findAll);
 
 /* GET all published Comment(s) */
 router.get("/published/:postId", comments.findPublishedComments);
