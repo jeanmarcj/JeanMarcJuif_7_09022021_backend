@@ -32,4 +32,5 @@ npm start
 TODO:
 
 - Dans la table 'posts' la colone 'authorId' n'est plus utilisée (remplacée par userId, insérée automatiquement par Sequelize lors de la création d'une association)
-- Dans les requêtes POST les id sont codés en hard.
+- npm install express-validator (pour valider les données d'un formulaire au niveau du serveur) cf : https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/forms & const { body,validationResult } = require('express-validator');
+
