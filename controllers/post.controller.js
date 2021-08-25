@@ -187,6 +187,7 @@ exports.findPublishedPosts = (req, res) => {
 };
 
 // Get the number of total published posts in the database
+// uri : /posts/totalpublishedposts/
 exports.getTotalPublishedPosts = (req, res) => {
     // res.send('Réponse de l\'API pour findPublishedPosts');
     Post.findAndCountAll({
@@ -195,25 +196,53 @@ exports.getTotalPublishedPosts = (req, res) => {
             published: true
         },
         // include: ["post", "user"]
-
-        })
-        .then(data => {
-            if (Object.keys(data).length === 0) {
-                console.log('*** - No Dislike(s) found in DB for this Post ! - ***');
-                res.json({ totalPublishedPost: 0 });
-            } else {
-                console.log(`*** - ${data.count} published Post(s) found ! - ***`);
-                res.json({
-                    totalPublishedPost: data.count,
-                    // Rows: data.rows
-                })
-            }
-
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message + ". Some error occurred while retrieving Dislikes !"
-            });
+    })
+    .then(data => {
+        if (Object.keys(data).length === 0) {
+            console.log('*** - No Post(s) found in DB ! - ***');
+            res.json({ totalPublishedPost: 0 });
+        } else {
+            console.log(`*** - ${data.count} published Post(s) found ! - ***`);
+            res.json({
+                totalPublishedPost: data.count,
+                // Rows: data.rows
+            })
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message:
+                err.message + ". Some error occurred while retrieving Posts !"
         });
+    });
+};
+
+// Get the number of total published posts in the database
+// uri : posts/lastpublishedposts
+exports.getLastPublishedPosts = (req, res) => {
+    // res.send('Réponse de l\'API pour findPublishedPosts');
+    Post.findAll({
+        attributes: ['id', 'title'],
+        where: {
+            published: true
+        },
+        include: ["user"],
+        limit: 3,
+        order: [['publishedAt', 'DESC']]
+    })
+    .then(data => {
+        if (Object.keys(data).length === 0) {
+            console.log('*** - No Post(s) found in DB ! - ***');
+            res.json({ totalPublishedPost: 0 });
+        } else {
+            console.log(`*** - published Post(s) found ! - ***`);
+            res.json(data);
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message:
+                err.message + ". Some error occurred while retrieving Posts !"
+        });
+    });
 };

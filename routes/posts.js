@@ -21,6 +21,9 @@ router.get("/published", posts.findPublishedPosts);
 //URI /posts/totalpublishedposts/
 router.get('/totalpublishedposts', posts.getTotalPublishedPosts);
 
+// * GET last 3 posts published in the database */
+router.get('/lastpublishedposts', posts.getLastPublishedPosts);
+
 /* Get one post by id */
 router.get('/:id', posts.findOne);
 
