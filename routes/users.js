@@ -18,6 +18,15 @@ router.get('/', users.findAll);
 /* GET all admin user(s) */
 router.get("/admin", users.findAllAdminUser);
 
+/* POST user login */
+/* URI : /users/login/ */
+router.post('/login', users.login);
+
+/* POST user signup */
+/* URI : /users/signup */
+router.post('/signup', users.create);
+
+
 /* Get one user by id */
 router.get('/:id', users.findOne);
 

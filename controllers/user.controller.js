@@ -21,7 +21,7 @@ exports.create = (req, res) => {
         passwordHash: req.body.passwordHash,
         passwordPlainText: req.body.passwordPlainText,
         registeredAT: new Date().getTime(),
-        isAdmin: true,
+        isAdmin: false,
         isOnline: true,
         isActive: true
     };
@@ -30,13 +30,62 @@ exports.create = (req, res) => {
     User.create(user)
     .then(data => {
         console.log('New User created with success !');
-        res.send(data);
+        res.status(200).json({data});
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occured while creating the User."
+            message: err.message + ". Some error occured while creating the User.",
+            class: 'danger'
         });
     });
+};
+
+// POST User login
+// URI /users/login
+exports.login = (req, res) => {
+    // res.json({ message: "[Users] login controller !"});
+    
+    const userEmail = req.body.email;
+    const userPassword = req.body.passwordPlainText;
+
+    User.findOne({
+        where: { email: userEmail }
+    })
+    .then(data => {
+        if (data === null) {
+            console.log('This Email is not in DB !');
+            return res.status(401).json({
+                message: 'Wrong email !',
+                class: 'danger'
+            });
+        } 
+        
+        if (userPassword == data.passwordPlainText) {
+            // TODO: Set the User as online;
+            console.log('User found in DB !');
+            res.status(200).json({
+                id: data.id,
+                firstName: data.firstName,
+                lastName : data.lastName,
+                email: data.email,
+                isAdmin: data.isAdmin,
+                avatar: data.avatar
+            });
+        } else {
+            return res.status(401).json({
+                message: 'Wrong Password !',
+                class: 'danger'
+            })
+        }
+        
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: "Error retrieving User. " + err.message,
+            class: 'danger'
+        });
+    })
+
 };
 
 // Get all Users from the database
@@ -52,7 +101,7 @@ exports.findAll = (req, res) => {
 
     User.findAll({ where: condition })
         .then(data => {
-            console.log('Users find !');
+            console.log('Users found !');
             res.json(data);
         })
         .catch(err => {
