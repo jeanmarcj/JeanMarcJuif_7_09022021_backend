@@ -61,8 +61,18 @@ exports.login = (req, res) => {
         } 
         
         if (userPassword == data.passwordPlainText) {
-            // TODO: Set the User as online;
             console.log('User found in DB !');
+            // Update the user: Set is online, Set is active;
+            
+            User.update({
+                isOnline: true,
+                isActive: true
+            },
+            { 
+                where: { id: data.id}
+            }).
+            then(console.log('User updated'))
+
             res.status(200).json({
                 id: data.id,
                 firstName: data.firstName,
