@@ -172,9 +172,10 @@ exports.deleteAll = (req, res) => {
 exports.findPublishedPosts = (req, res) => {
     // res.send('Réponse de l\'API pour findPublishedPosts');
     Post.findAll({
-            attributes: ['id', 'authorId', 'title', 'published'],
+            // attributes: ['id', 'authorId', 'title', 'published'],
             include: ["user"],
-            where: { published: true }
+            where: { published: true },
+            order: [['publishedAt', 'DESC']]
         })
         .then(data => {
             res.json(data);
