@@ -30,11 +30,11 @@ const db = require('./app/models');
 // db.sequelize.sync();
 
 // In development, drop existings tables and re-sync database.
-db.sequelize.sync({ force: true }).then (() => {
-    console.log("Drop & re-sync db.");
-}).catch(error => {
-    console.error("Wrong database credentials ?");
-});
+// db.sequelize.sync({ force: true }).then (() => {
+//     console.log("Drop & re-sync db.");
+// }).catch(error => {
+//     console.error("Wrong database credentials ?");
+// });
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
