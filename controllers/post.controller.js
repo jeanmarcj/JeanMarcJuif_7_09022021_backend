@@ -17,7 +17,8 @@ exports.create = (req, res) => {
 
     // Create Post
     const post = {
-        authorId: 1,
+        authorId: req.body.userId,
+        userId: req.body.userId,
         title: req.body.title,
         media: req.body.media,
         content: req.body.content,
@@ -172,8 +173,8 @@ exports.deleteAll = (req, res) => {
 exports.findPublishedPosts = (req, res) => {
     // res.send('Réponse de l\'API pour findPublishedPosts');
     Post.findAll({
-            // attributes: ['id', 'authorId', 'title', 'published'],
-            include: ["user"],
+            // attributes: ['Post.*', [sequelize.fn('COUNT', 'comments.id'), 'CommentsCount']],
+            include: ["user", "comments"],
             where: { published: true },
             order: [['publishedAt', 'DESC']]
         })
