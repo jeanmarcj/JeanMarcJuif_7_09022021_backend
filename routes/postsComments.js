@@ -14,6 +14,9 @@ router.get("/", comments.findAll);
 /* GET all published Comment(s) */
 router.get("/published/:postId", comments.findPublishedComments);
 
+/* GET count all published Comment(s) for a post */
+router.get("/published/count/:postId", comments.countPublishedComments);
+
 /* Get one Comment by id */
 router.get('/:id', comments.findOne);
 
