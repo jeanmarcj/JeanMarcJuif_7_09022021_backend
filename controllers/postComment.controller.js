@@ -21,7 +21,7 @@ exports.create = (req, res) => {
         userId: req.body.userId, // Should be dynamic
         postId: req.body.postId, // Should be dynamic
         content: req.body.content,
-        published: true
+        published: req.body.published
     };
 
     // Save Comment in the db
@@ -203,7 +203,7 @@ exports.findPublishedComments = (req, res) => {
     // res.json( {message: '[comments] Réponse de l\'API pour findPublishedComments postId: ' + postId });
 
     Comment.findAll(
-        {   attributes: ['id','content', 'published'],
+        {   attributes: ['id','content', 'published', 'createdAt'],
             include: ["post", "user"],
             where: {
                 postId: postId,
@@ -218,6 +218,40 @@ exports.findPublishedComments = (req, res) => {
             } else {
                 console.log('*** - Published comments found ! - ***');
                 res.json(data);
+            }
+            
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err + ". Some error occurred when retrieving Posts."
+            });
+        });
+};
+
+// Count all Comments with published = true
+// uri : /comments/published/count/:postId
+exports.countPublishedComments = (req, res) => {
+    const postId = req.params.postId;
+
+    Comment.findAndCountAll(
+        {   attributes: ['id','content', 'published'],
+            include: ["post", "user"],
+            where: {
+                postId: postId,
+                published: true
+            }
+        }
+        )
+        .then(data => {
+            if (Object.keys(data).length === 0) {
+                console.log('*** - No published Comment(s) found in the database !');
+                res.json({ totalPublishedComments: 0 })
+            } else {
+                console.log(`*** - ${data.count} published Comments(s) found ! - ***`);
+                res.json({
+                    totalPublishedComments: data.count,
+                    // Rows: data.rows
+                })
             }
             
         })
