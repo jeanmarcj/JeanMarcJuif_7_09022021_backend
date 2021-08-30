@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+
+const auth = require('../middleware/auth');
 const likes = require('../controllers/postLike.controller');
 
 /* Create a new Like/Dislike */

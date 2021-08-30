@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+
+const auth = require('../middleware/auth');
 const users = require('../controllers/user.controller');
 
 
@@ -28,16 +30,16 @@ router.post('/signup', users.create);
 
 
 /* Get one user by id */
-router.get('/:id', users.findOne);
+router.get('/:id', auth, users.findOne);
 
 /* PUT user by id */
-router.put("/:id", users.update);
+router.put("/:id", auth, users.update);
 
 /* DELETE a user by id */
-router.delete("/:id", users.delete);
+router.delete("/:id", auth, users.delete);
 
 /* DELETE all Users */
-router.delete("/", users.deleteAll);
+router.delete("/", auth, users.deleteAll);
 
 
 

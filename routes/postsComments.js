@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+
+const auth = require('../middleware/auth');
 const comments = require('../controllers/postComment.controller');
 
 /* Create a new Comment */
