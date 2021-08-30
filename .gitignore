@@ -1,6 +1,7 @@
 .DS_Store
 db.config.js
 db.config.bak.js
+user.controller.bak.js
 # Logs
 logs
 *.log
