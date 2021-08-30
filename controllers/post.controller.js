@@ -35,7 +35,7 @@ exports.create = (req, res) => {
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occured while creating the Post."
+            message: err.message + "Some error occured while creating the Post."
         });
     });
 };
