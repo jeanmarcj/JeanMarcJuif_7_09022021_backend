@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
             unique: true
         },
         passwordHash: {
-            type: Sequelize.STRING(50)
+            type: Sequelize.STRING(100)
         },
         passwordPlainText: {
             type: Sequelize.STRING(50),
