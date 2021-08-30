@@ -1,7 +1,11 @@
-// const User = require('../models/User.model');
 const db = require('../models');
 const User = db.users;
 const Op = db.Sequelize.Op;
+// Hash password in DB
+const bcrypt = require('bcrypt');
+// Token Authentification
+const jwt = require('jsonwebtoken');
+
 
 // Create and save a new User
 exports.create = (req, res) => {
@@ -21,31 +25,33 @@ exports.create = (req, res) => {
         return;
     }
 
-    // Create User
-    const user = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        passwordHash: req.body.passwordHash,
-        passwordPlainText: req.body.passwordPlainText,
-        registeredAT: new Date().getTime(),
-        isAdmin: false,
-        isOnline: true,
-        isActive: true
-    };
-
-    // Save User in the db
-    User.create(user)
-    .then(data => {
-        console.log('New User created with success !');
-        res.status(200).json({data});
+    bcrypt.hash(req.body.passwordPlainText, 10)
+    .then(hash => {
+        // Create User
+        const user = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            passwordHash: hash,
+            passwordPlainText: req.body.passwordPlainText,
+            registeredAT: new Date().getTime(),
+            isAdmin: false,
+            isOnline: true,
+            isActive: true
+        };
+        
+        // Save User in database
+        User.create(user)
+        .then(data => {
+            console.log('New User created with success !');
+            res.status(201).json({data})
+        })
+        .catch(err => res.status(400).json({
+            message: "Some error occured while creating the User." + err.message
+        }));
     })
-    .catch(err => {
-        res.status(500).send({
-            message: err.message + ". Some error occured while creating the User.",
-            class: 'danger'
-        });
-    });
+    .catch(err => res.status(500).json(err));
+
 };
 
 // POST User login
@@ -54,54 +60,45 @@ exports.login = (req, res) => {
     // res.json({ message: "[Users] login controller !"});
     // console.log(req);
     const userEmail = req.body.email;
-    const userPassword = req.body.passwordPlainText;
 
     User.findOne({
         where: { email: userEmail }
     })
-    .then(data => {
-        if (data === null) {
-            console.log('This Email is not in DB !');
-            return res.status(401).json({
-                message: 'Wrong email !',
-                class: 'danger'
+    .then(user => {
+        if (user === null) {
+            console.log('User not found in DB !');
+            return res.status(401).json({ message: 'User not found !'
             });
         } 
         
-        if (userPassword == data.passwordPlainText) {
-            console.log('User found in DB !');
-            // Update the user: Set is online, Set is active;
-            
-            User.update({
-                isOnline: true,
-                isActive: true
-            },
-            { 
-                where: { id: data.id}
-            }).
-            then(console.log('User updated'))
-
-            res.status(200).json({
-                id: data.id,
-                firstName: data.firstName,
-                lastName : data.lastName,
-                email: data.email,
-                isAdmin: data.isAdmin,
-                avatar: data.avatar
-            });
-        } else {
-            return res.status(401).json({
-                message: 'Wrong Password !',
-                class: 'danger'
+        bcrypt.compare(req.body.passwordPlainText, user.passwordHash)
+            .then(valid => {
+                if (!valid) {
+                    return res.status(401).json({message: "Wrong password !"});
+                }
+                res.status(200).json({
+                    userId: user.id,
+                    token: jwt.sign(
+                            { id: user.id },
+                            'RANDOM_TOKEN_SUPERSECRET',
+                            { expiresIn: '24h' }
+                        ),
+                    firstName: user.firstName,
+                    lastName : user.lastName,
+                    email: user.email,
+                    isAdmin: user.isAdmin,
+                    avatar: user.avatar,
+                    isOnline: true,
+                    isActive: true
+                });
             })
-        }
-        
+            .catch(err => res.status(500).json({
+                message: 'Wrong Password ! ' + err.message }));
     })
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            message: "Error retrieving User. " + err.message,
-            class: 'danger'
+            message: "Error retrieving User. " + err.message
         });
     })
 
