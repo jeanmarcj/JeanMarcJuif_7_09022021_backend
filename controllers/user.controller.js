@@ -44,7 +44,7 @@ exports.create = (req, res) => {
 // URI /users/login
 exports.login = (req, res) => {
     // res.json({ message: "[Users] login controller !"});
-    
+    // console.log(req);
     const userEmail = req.body.email;
     const userPassword = req.body.passwordPlainText;
 
@@ -90,6 +90,7 @@ exports.login = (req, res) => {
         
     })
     .catch(err => {
+        console.log(err);
         res.status(500).json({
             message: "Error retrieving User. " + err.message,
             class: 'danger'
