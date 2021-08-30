@@ -5,10 +5,18 @@ const Op = db.Sequelize.Op;
 
 // Create and save a new User
 exports.create = (req, res) => {
-    // Validate the request
+
+    // Validate email from the request
     if (!req.body.email) {
         res.status(400).send({
             message: "Email can not be empty !"
+        });
+        return;
+    }
+    // Validate paswword from the requests
+    if(!req.body.passwordPlainText) {
+        res.status(400).send({
+            message: "Password can not be empty !"
         });
         return;
     }
