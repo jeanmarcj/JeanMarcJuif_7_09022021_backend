@@ -1,5 +1,6 @@
 module.exports = {
-    HOST: "192.168.1.4",
+    // HOST: "192.168.1.4",
+    HOST: "jmjds220.synology.me",
     USER: "JMarc",
     PASSWORD: "Djoko7web@21",
     DB: "groupomaniablog",
