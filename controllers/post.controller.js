@@ -11,42 +11,42 @@ exports.create = (req, res) => {
     // Pour envoyer un fichier image joint
     
     // On récupère le fichier 'post' envoyé
-    const postObject = JSON.parse(req.body.post);
+    // const postObject = JSON.parse(req.body.post);
 
-    const post = {
-        authorId: postObject.userId,
-        userId: postObject.userId,
-        title: postObject.title,
-        media: postObject.media,
-        media: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-        content: postObject.content,
-        slug: postObject.slug,
-        published: true,
-        publishedAT: new Date().getTime()
-    };
+    // const post = {
+    //     authorId: postObject.userId,
+    //     userId: postObject.userId,
+    //     title: postObject.title,
+    //     media: postObject.media,
+    //     media: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    //     content: postObject.content,
+    //     slug: postObject.slug,
+    //     published: true,
+    //     publishedAT: new Date().getTime()
+    // };
 
     /**
      * OLD CODE
      */
-    // // Validate the request
-    // if (!req.body.title || !req.body.slug) {
-    //     res.status(400).send({
-    //         message: "Title or Slug can not be empty !"
-    //     });
-    //     return;
-    // }
+    // Validate the request
+    if (!req.body.title || !req.body.slug) {
+        res.status(400).send({
+            message: "Title or Slug can not be empty !"
+        });
+        return;
+    }
 
-    // // Create Post
-    // const post = {
-    //     authorId: req.body.userId,
-    //     userId: req.body.userId,
-    //     title: req.body.title,
-    //     media: req.body.media,
-    //     content: req.body.content,
-    //     slug: req.body.slug,
-    //     published: true,
-    //     publishedAT: new Date().getTime()
-    // };
+    // Create Post
+    const post = {
+        authorId: req.body.userId,
+        userId: req.body.userId,
+        title: req.body.title,
+        media: req.body.media,
+        content: req.body.content,
+        slug: req.body.slug,
+        published: true,
+        publishedAT: new Date().getTime()
+    };
 
     // Save User in the db
     Post.create(post)
