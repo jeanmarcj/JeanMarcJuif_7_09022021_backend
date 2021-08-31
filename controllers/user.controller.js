@@ -58,8 +58,9 @@ exports.create = (req, res) => {
 // URI /users/login
 exports.login = (req, res) => {
     // res.json({ message: "[Users] login controller !"});
-    // console.log(req);
+    // console.log(req.body);
     const userEmail = req.body.email;
+    // console.log(userEmail);
 
     User.findOne({
         where: { email: userEmail }
