@@ -1,3 +1,4 @@
+const util = require('util');
 const multer = require('multer');
 
 const MIME_TYPES = {
@@ -5,6 +6,10 @@ const MIME_TYPES = {
     'image/jpeg': 'jpg',
     'image/png': 'png'
 }
+
+const maxSize = 2 * 1024 * 1024;
+
+
 /**
  * Configuration de multer pour le téléchargement d'images
  */
@@ -13,10 +18,22 @@ const storage = multer.diskStorage({
         callback(null, 'images')
     },
     filename: (req, file, callback) => {
-        const name = file.originalname.split(' ').join('_');
-        const extension = MIME_TYPES[file.mimetype];
-        callback(null, name + Date.now() + '.' + extension);
+        // console.log(file.originalname);
+        // const name = file.originalname.split(' ').join('_');
+        // const extension = MIME_TYPES[file.mimetype];
+        // callback(null, name + Date.now() + '.' + extension);
+        callback(null, `${Date.now()}-jmj-${file.originalname}`);
     }
 });
 
-module.exports = multer({ storage }).single('image');
+// util.promisify() makes the exported middleware object can be used with async-await
+
+let uploadFile = multer({
+    storage: storage,
+    limits: { filesize: maxSize },
+}).single("file");
+
+let uploadFileMiddleware = util.promisify(uploadFile);
+
+// module.exports = multer({ storage }).single('image');
+module.exports = uploadFileMiddleware;
