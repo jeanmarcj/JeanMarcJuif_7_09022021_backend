@@ -1,5 +1,4 @@
 .DS_Store
-db.config.js
 db.config.bak.js
 user.controller.bak.js
 post.controller.bak.js
