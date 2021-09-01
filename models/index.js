@@ -54,11 +54,16 @@ db.postComments.belongsTo(db.users, { foreingnKey: "userId", as: "user" });
 // One post has many Comments
 // Comments belongs to one post
 db.posts.hasMany(db.postComments, { as: "comments" });
-db.postComments.belongsTo(db.posts, { foreingnKey: "postId", as: "post" });
+db.postComments.belongsTo(db.posts, {
+    foreingnKey: "postId", as: "post"
+});
 
 /* REPORTS */
 // One Post has many Reports - One to Many
-db.posts.hasMany(db.postsReport, { as: "reports" });
+db.posts.hasMany(db.postsReport, {
+    as: "reports",
+    onDelete: 'CASCADE'
+});
 // Reports belongs to one post to indicate that one Report only belongs to one Post
 db.postsReport.belongsTo(db.posts, { foreingnKey: "postId", as: "post"} ); // Will add postId to postsReport
 
