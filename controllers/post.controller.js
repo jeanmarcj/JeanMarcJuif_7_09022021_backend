@@ -31,7 +31,7 @@ exports.create = (req, res) => {
     // Validate the request
     if (!req.body.title || !req.body.slug) {
         res.status(400).send({
-            message: "Title or Slug can not be empty !"
+            message: "Le titre ou le slug n'est pas indiqué !"
         });
         return;
     }
@@ -51,12 +51,12 @@ exports.create = (req, res) => {
     // Save User in the db
     Post.create(post)
     .then(data => {
-        console.log('New Post created with success !');
+        console.log('Nouveau Message crée avec succès !');
         res.send(data);
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message + "Some error occured while creating the Post."
+            message: "Une erreur est survenue losr de la cration du message. " + err.message
         });
     });
 };
@@ -78,10 +78,10 @@ exports.findAll = (req, res) => {
     })
         .then(data => {
             if (Object.keys(data).length === 0) {
-                console.log('No Posts found in DB !');
-                res.json({ message: 'No Post(s) found in database'});
+                console.log('Aucun message trouvé dans la base de donnée !');
+                res.json({ message: 'Aucun message trouvé dans la base de donnée !'});
             } else {
-                console.log('Posts find !');
+                // console.log('Messages trouvés!');
                 res.json(data);
             }
 
@@ -89,7 +89,7 @@ exports.findAll = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving posts !"
+                    "Une erreur est apparue lors de la réception des messages. "+ err.message
             });
         });
 };
@@ -109,8 +109,8 @@ exports.findOne = (req, res) => {
         //Get the Post with User datas included
         // console.log(data);
         if (data === null) {
-            console.log('This Post is not in DB !');
-            res.json({ message: 'This Post is not in DB !'});
+            console.log("Ce message n'est pas dans la base de données !");
+            res.json({ message: "Ce message n'est pas dans la base de données !"});
         } else {
             res.json(data);
             //Get the User record only
@@ -119,7 +119,7 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
         res.status(500).send({
-            message: "Error retrieving Post with id=" + id || err.message
+            message: "Une erreur est apparue lors de la réception des messages. "+ err.message
         });
     })
 };
@@ -133,17 +133,17 @@ exports.update = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
-            console.log("Post was updated successfully");
-            res.json({ message: "Post was updated successfully" });
+            console.log("Message mis à jour !");
+            res.json({ message: "Message mis à jour !" });
         } else {
-            console.log(`Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty !`);
-            res.json({ message: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty !` });
+            console.log(`Imposible de mettre à jour ce message.`);
+            res.json({ message: `Imposible de mettre à jour ce message` });
         }
       })
       .catch(err => {
           console.log(err);
         res.status(500).send({
-          message: err + " - Error updating Post with id=" + id
+          message: "Imposible de mettre à jour ce message ! " + Error
         });
       });
   };
@@ -157,16 +157,16 @@ exports.delete = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
-            console.log("Post was deleted successfully");
-            res.json({ message: "Post was deleted successfully" });
+            console.log("Message effacé !");
+            res.json({ message: "Message effacé" });
         } else {
-            console.log(`Cannot delete Post with id=${id}. Maybe Post was not found or req.body is empty !`);
-            res.json({ message: `Cannot delete Post with id=${id}. Maybe Post was not found !` });
+            console.log('Le message n\'a pas pu être effacé !');
+            res.json({ message: `Ce message n'a pas pu être effacé !` });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "Could not delete Post with id=" + id
+          message: "Ce message n'a pas pu être effacé !"
         });
       });
   };
@@ -178,13 +178,13 @@ exports.deleteAll = (req, res) => {
       truncate: false
     })
       .then(nums => {
-          console.log(`${num} Posts were deleted successfully`);
-          res.json({ message: `${nums} Posts were deleted successfully` })
+          console.log(`${num} Messages effacés avec succès !`);
+          res.json({ message: `${nums} Messages effacés avec succès !` })
       })
       .catch(err => {
         res.status(500).send({
           message:
-            err.message || "Some error occurred while removing all Posts."
+            "Some error occurred while removing all Posts. " + err.message
         });
       });
   };
@@ -204,7 +204,7 @@ exports.findPublishedPosts = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Some error occurred when retrieving Posts."
+                message: "Une erreur est apparu lors de la réception des messages !" + err.message
             });
         });
 };
@@ -222,10 +222,10 @@ exports.getTotalPublishedPosts = (req, res) => {
     })
     .then(data => {
         if (Object.keys(data).length === 0) {
-            console.log('*** - No Post(s) found in DB ! - ***');
+            console.log('*** Aucun message trouvé dans la base de données - ***');
             res.json({ totalPublishedPost: 0 });
         } else {
-            console.log(`*** - ${data.count} published Post(s) found ! - ***`);
+            console.log(`*** - ${data.count} messages publiés trouvés - ***`);
             res.json({
                 totalPublishedPost: data.count,
                 // Rows: data.rows
@@ -235,7 +235,7 @@ exports.getTotalPublishedPosts = (req, res) => {
     .catch(err => {
         res.status(500).send({
             message:
-                err.message + ". Some error occurred while retrieving Posts !"
+            "Une erreur est apparu lors de la réception des messages !" + err.message
         });
     });
 };
@@ -255,17 +255,17 @@ exports.getLastPublishedPosts = (req, res) => {
     })
     .then(data => {
         if (Object.keys(data).length === 0) {
-            console.log('*** - No Post(s) found in DB ! - ***');
+            console.log('*** Aucun message trouvé ! - ***');
             res.json({ totalPublishedPost: 0 });
         } else {
-            console.log(`*** - published Post(s) found ! - ***`);
+            console.log(`*** - Messages publiés trouvés ! - ***`);
             res.json(data);
         }
     })
     .catch(err => {
         res.status(500).send({
             message:
-                err.message + ". Some error occurred while retrieving Posts !"
+            "Une erreur est apparu lors de la réception des messages !" + err.message
         });
     });
 };
