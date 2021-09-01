@@ -13,14 +13,14 @@ exports.create = (req, res) => {
     // Validate email from the request
     if (!req.body.email) {
         res.status(400).send({
-            message: "Email can not be empty !"
+            message: "Veuillez saisir un email !"
         });
         return;
     }
     // Validate paswword from the requests
     if(!req.body.passwordPlainText) {
         res.status(400).send({
-            message: "Password can not be empty !"
+            message: "Veuillez saisir un mot de passe !"
         });
         return;
     }
@@ -43,11 +43,11 @@ exports.create = (req, res) => {
         // Save User in database
         User.create(user)
         .then(data => {
-            console.log('New User created with success !');
+            console.log('Nouvel utilisateur créé !');
             res.status(201).json({data})
         })
         .catch(err => res.status(400).json({
-            message: "Some error occured while creating the User." + err.message
+            message: "Une erreur est intervenue à la création d'un utilisateur. " + err.message
         }));
     })
     .catch(err => res.status(500).json(err));
@@ -67,7 +67,7 @@ exports.login = (req, res) => {
     })
     .then(user => {
         if (user === null) {
-            console.log('User not found in DB !');
+            console.log('Utilisateur introuvable dans la base de données !');
             return res.status(401).json({ message: 'User not found !'
             });
         } 
@@ -94,12 +94,12 @@ exports.login = (req, res) => {
                 });
             })
             .catch(err => res.status(500).json({
-                message: 'Wrong Password ! ' + err.message }));
+                message: 'Erreur dans le mot de passe ! ' + err.message }));
     })
     .catch(err => {
         console.log(err);
         res.status(500).json({
-            message: "Error retrieving User. " + err.message
+            message: "Une erreur est intervenue ! " + err.message
         });
     })
 
@@ -118,13 +118,13 @@ exports.findAll = (req, res) => {
 
     User.findAll({ where: condition })
         .then(data => {
-            console.log('Users found !');
+            console.log('Utilisateurs trouvés !');
             res.json(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving users !"
+                "Une erreur est intervenue  !" + err.message
             });
         });
 };
@@ -146,7 +146,7 @@ exports.findOne = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving User with id=" + id
+                message: "Une erreur est intervenue ! "
             });
         });
 };
@@ -160,16 +160,16 @@ exports.update = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
-            console.log("User was updated successfully");
-            res.json({ message: "User was updated successfully" });
+            console.log("Utilisateur mis à jour !");
+            res.json({ message: "Utilisateur mis à jour !" });
         } else {
-            console.log(`Cannot update User with id=${id}. Maybe User was not found or req.body is empty !`);
-            res.json({ message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty !` });
+            console.log("Une erreur est intervenue pour retrouver cet utilisateur");
+            res.json({ message: "Une erreur est intervenue pour retrouver cet utilisateur" });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error updating User with id=" + id
+          message: "Une erreur est intervenue pendant la mise à jour de cet utilisateur"
         });
       });
   };
@@ -183,16 +183,16 @@ exports.delete = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
-            console.log("User was deleted successfully");
-            res.json({ message: "User was deleted successfully" });
+            console.log("Utilisateur effacé !");
+            res.json({ message: "Utilisateur effacé !" });
         } else {
-            console.log(`Cannot delete User with id=${id}. Maybe User was not found or req.body is empty !`);
-            res.json({ message: `Cannot delete User with id=${id}. Maybe User was not found !` });
+            console.log("Une erreur est intervenue lors de la suppression de cet utilisateur !");
+            res.json({ message: "Une erreur est intervenue lors de la suppression de cet utilisateur !" });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "Could not delete User with id=" + id
+          message: "Une erreur est intervenue lors de la suppression de cet utilisateur !"
         });
       });
   };
@@ -204,13 +204,13 @@ exports.deleteAll = (req, res) => {
       truncate: false
     })
       .then(nums => {
-          console.log(`${num} Users were deleted successfully`);
-          res.json({ message: `${nums} Users were deleted successfully` })
+          console.log(`${num} Utilisateurs effacés !`);
+          res.json({ message: `${nums} Utilisateurs effacés !` })
       })
       .catch(err => {
         res.status(500).send({
           message:
-            err.message || "Some error occurred while removing all users."
+            "Une erreur est intervenue lors de l'effacement de tous les utilisateurs " + err.message
         });
       });
   };
@@ -226,7 +226,7 @@ exports.findAllAdminUser = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Some error occurred when retrieving users."
+                message: "Une erreur est intervenue !"
             });
         });
 };
