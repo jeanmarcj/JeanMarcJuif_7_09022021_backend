@@ -11,7 +11,7 @@ exports.create = (req, res) => {
     // Validate the request
     if (!req.body.content) {
         res.status(400).send({
-            message: "The Comment content can not be empty !"
+            message: "Le contenu de votre commentaire est vide !"
         });
         return;
     }
@@ -27,12 +27,12 @@ exports.create = (req, res) => {
     // Save Comment in the db
     Comment.create(comment)
     .then(data => {
-        console.log('*** - New Comment created with success ! - ***');
+        // console.log('*** - Nouveau commentaire créé ! - ***');
         res.send(data);
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message +". Some error occured while creating the Comment."
+            message: err.message +". Une erreur est intervenue lors de la création de ce commentaire."
         });
     });
 };
@@ -54,10 +54,10 @@ exports.findAllByPost = (req, res) => {
     })
         .then(data => {
             if (Object.keys(data).length === 0) {
-                console.log('*** - No Comments found in DB for this Post ! - ***');
-                res.json({ message: 'No Comments(s) found in database for this Post.'});
+                console.log('*** - Aucun commentaire pour ce message (post) ! - ***');
+                res.json({ message: 'Aucun commentaire pour ce message (post) !'});
             } else {
-                console.log('*** - Comments found ! - ***');
+                // console.log('*** - Commentaires récupérés ! - ***');
                 res.json(data);
             }
 
@@ -65,7 +65,7 @@ exports.findAllByPost = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message + ". Some error occurred while retrieving Comments !"
+                    err.message + ". Une erreur est intervenue lors de la réception des commentaires !"
             });
         });
 };
@@ -79,15 +79,15 @@ exports.findAll = (req, res) => {
     })
     .then(data => {
         if (Object.keys(data).length === 0) {
-            console.log('*** - No Comments found in database ! - ***')
-            res.json({ message: 'No Comments found in the database !'});
+            console.log('*** - Aucun commentaires dans la base de données ! - ***')
+            res.json({ message: 'Aucun commentaires dans la base de données !'});
         } else {
-            console.log('Comments found !');
+            // console.log('Comments found !');
             res.json(data);
         }
     })
     .catch(err => { res.status(500).send(
-        { message: err.message + ". Some error occurred while retrieving Comments !"}
+        { message: err.message + ". Une erreur est intervenue lors de la récupération des commentaires !"}
         )
     });
 };
@@ -107,8 +107,8 @@ exports.findOne = (req, res) => {
     .then(data => {
         //Get the Comment with User datas included
         if (data === null) {
-            console.log('*** - This Comment is not in DB ! - ***');
-            res.json({ message: 'This Comment is not in DB !'});
+            console.log('*** - Ce commentaire n\'est pas dans la base de donnée ! - ***');
+            res.json({ message: 'Ce commentaire n\'est pas dans la base de donnée !'});
         } else {
             //Get the User record only
             // console.log(data.user);
@@ -117,7 +117,7 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message + ". Error retrieving Post with id=" + id
+            message: err.message + ". Une erreur est intervenue pour récupérer ce commentaire !"
         });
     })
 };
@@ -133,17 +133,17 @@ exports.update = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
-            console.log("*** - Comment was updated successfully - ***");
-            res.json({ message: "Comment was updated successfully" });
+            // console.log("*** - Le commentaire a été mis à jour - ***");
+            res.json({ message: "Le commentaire a été mis à jour" });
         } else {
-            console.log(`*** - Cannot update Comment with id=${id}. Maybe this Comment was not found or req.body is empty ! - ***`);
-            res.json({ message: `Cannot update Comment !` });
+            console.log(`*** - La mise à jour de ce commentaire a échouée pour id=${id} - ***`);
+            res.json({ message: `La mise à jour de ce commentaire a échouée !` });
         }
       })
       .catch(err => {
           console.log(err);
         res.status(500).send({
-          message: err + ". Error updating Comment with id=" + id
+          message: err + ". La mise à jour a échouée id=" + id
         });
       });
   };
@@ -160,23 +160,23 @@ exports.delete = (req, res) => {
     })
       .then(num => {
         if (num == 1) {
-            console.log("*** - Comment was deleted successfully - ***");
-            res.json({ message: "The Comment has been deleted successfully !" });
+            console.log("*** - Le commentaire a été effacé ! - ***");
+            res.json({ message: "Le commentaire a été effacé !" });
         } else {
-            console.log(`*** - Cannot delete this Comment with id=${id}. Maybe this Comment was not found or req.body is empty ! - ***`);
-            res.json({ message: `Cannot delete this Comment !` });
+            console.log(`*** - Impossible d'effacer le commentaire id=${id} - ***`);
+            res.json({ message: `Impossible d'effacer le commentaire !` });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "Could not delete this Comment with id=" + id
+          message: "La suppression de ce commentaire a échouée ! id=" + id
         });
       });
   };
 
 // Delete all Comments from the database
 exports.deleteAll = (req, res) => {
-    res.json({ message: "[Comments] Requête API : deleteAll. This functionnality doesn't work !" });
+    res.json({ message: "[Comments] Requête API : deleteAll. Cette fonctionnalité est désactivée !" });
 
     // Comment.destroy({
     //   where: {},
@@ -213,17 +213,17 @@ exports.findPublishedComments = (req, res) => {
         )
         .then(data => {
             if (data === null) {
-                console.log('*** - No published Comment(s) found in the database !');
-                res.json({ message: "No published comment(s) found in the database !" })
+                console.log('*** - Aucun commentaire(s) publiés trouvés pour ce message ! - ***');
+                res.json({ message: "Aucun commentaire(s) publiés trouvés pour ce message !" })
             } else {
-                console.log('*** - Published comments found ! - ***');
+                // console.log('*** - Published comments found ! - ***');
                 res.json(data);
             }
             
         })
         .catch(err => {
             res.status(500).send({
-                message: err + ". Some error occurred when retrieving Posts."
+                message: err + ". Une erreur est intervenue lors de la récupération des messages !."
             });
         });
 };
@@ -244,10 +244,10 @@ exports.countPublishedComments = (req, res) => {
         )
         .then(data => {
             if (Object.keys(data).length === 0) {
-                console.log('*** - No published Comment(s) found in the database !');
+                // console.log('*** - Aucun commentaire !');
                 res.json({ totalPublishedComments: 0 })
             } else {
-                console.log(`*** - ${data.count} published Comments(s) found ! - ***`);
+                console.log(`*** - ${data.count} commentaires publiés touvés - ***`);
                 res.json({
                     totalPublishedComments: data.count,
                     // Rows: data.rows
@@ -257,7 +257,7 @@ exports.countPublishedComments = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: err + ". Some error occurred when retrieving Posts."
+                message: err + ". Une erreur est intervenue lors de la récupération des commentaires !"
             });
         });
 };
