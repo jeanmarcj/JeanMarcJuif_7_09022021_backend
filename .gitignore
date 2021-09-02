@@ -2,7 +2,6 @@
 db.config.bak.js
 user.controller.bak.js
 post.controller.bak.js
-images/
 # Logs
 logs
 *.log
