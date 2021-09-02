@@ -1,33 +1,12 @@
+const fs = require('fs');
 const db = require('../models');
 const Post = db.posts;
 const Op = db.Sequelize.Op;
-
 
 // Create and save a new Post
 exports.create = (req, res) => {
     // res.json({ message: "[Posts] Requête API : create ctrl !"});
 
-    // Le front doit envoyer un ficher sous la forme form-data
-    // Pour envoyer un fichier image joint
-    
-    // On récupère le fichier 'post' envoyé
-    // const postObject = JSON.parse(req.body.post);
-
-    // const post = {
-    //     authorId: postObject.userId,
-    //     userId: postObject.userId,
-    //     title: postObject.title,
-    //     media: postObject.media,
-    //     media: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-    //     content: postObject.content,
-    //     slug: postObject.slug,
-    //     published: true,
-    //     publishedAT: new Date().getTime()
-    // };
-
-    /**
-     * OLD CODE
-     */
     // Validate the request
     if (!req.body.title || !req.body.slug) {
         res.status(400).send({
@@ -152,24 +131,59 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
   
-    Post.destroy({
-      where: { id: id }
+    Post.findOne({
+        where: { id: id }
     })
-      .then(num => {
-        if (num == 1) {
-            console.log("Message effacé !");
-            res.json({ message: "Message effacé" });
-        } else {
-            console.log('Le message n\'a pas pu être effacé !');
-            res.json({ message: `Ce message n'a pas pu être effacé !` });
+    .then(post => {
+        const mediaUrl = post.media.split('/images/')[1];
+        console.log(mediaUrl);
+        // console.log(fs);
+
+        try {
+            fs.unlink(`images/${mediaUrl}`, () =>{
+                console.log('File deleted');
+            })
+
+            Post.destroy({
+                where: {id: id}
+            })
+            .then(num => {
+                if (num == 1) {
+                    console.log('Message effacé !')
+                    res.status(200).json({
+                        message: "Message effacé"
+                    })
+                } else {
+                    console.log("Le message n'a pas pu être effacé !")
+                }
+            })
+            .then(err => {
+                res.status(500).send("Ce message n'a pas été effacé !")
+            })
+            
+        } catch (error) {
+            console.log(error)
         }
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: "Ce message n'a pas pu être effacé !"
-        });
-      });
-  };
+        
+        // fs.unlink(`images/${mediaUrl}`, () => {
+        //     Post.destroy({
+        //         where: {id: id}
+        //     })
+        //     .then(num => {
+        //         if (num == 1) {
+        //             console.log("Message effacé!")
+        //         } else {
+        //             console.log("Le message n'a pas pu être effacé ! ")
+        //         }
+        //     })
+        //     .catch(err => {
+        //         res.status(500).send('Ce message n\'a pas été effacé !')
+        //     })
+        // })
+    })
+    .catch(error => res.status(500).json({ error}))
+
+};
 
 // Delete all Posts from the database
 exports.deleteAll = (req, res) => {
