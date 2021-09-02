@@ -33,7 +33,7 @@ exports.create = (req, res) => {
             lastName: req.body.lastName,
             email: req.body.email,
             passwordHash: hash,
-            passwordPlainText: req.body.passwordPlainText,
+            passwordPlainText: '',
             registeredAT: new Date().getTime(),
             isAdmin: false,
             isOnline: true,
