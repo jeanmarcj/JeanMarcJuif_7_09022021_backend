@@ -35,5 +35,6 @@ let uploadFile = multer({
 
 let uploadFileMiddleware = util.promisify(uploadFile);
 
-// module.exports = multer({ storage }).single('image');
+// module.exports = multer({ storage }).single('file');
 module.exports = uploadFileMiddleware;
+// module.exports = uploadFile;
