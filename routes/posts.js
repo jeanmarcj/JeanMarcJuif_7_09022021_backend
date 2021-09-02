@@ -20,7 +20,7 @@ router.post('/', posts.create);
 router.get("/", posts.findAll);
 
 /* GET all published post(s) */
-router.get("/published", multer, posts.findPublishedPosts);
+router.get("/published", posts.findPublishedPosts);
 
 /* GET the number total of published posts in DataBase. */
 //URI /posts/totalpublishedposts/
